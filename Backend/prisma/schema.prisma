@@ -1,13 +1,199 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
 }
+
+
+
+enum OAuthProvider {
+  GOOGLE
+  GITHUB
+  LOCAL
+}
+
+enum ScheduleType {
+  DAILY
+  WEEKLY
+  MONTHLY
+  YEARLY
+}
+
+
+enum ExpenseStatus {
+  ACTIVE
+  DELETED
+}
+
+enum BudgetPeriod {
+  MONTHLY
+  ROLLING_30
+  PAYCHECK
+}
+
+
+// ============================================================
+// USER & PREFERENCES
+// ============================================================
+
+model User {
+  id             String        @id @default(uuid())
+  email          String        @unique
+  name           String
+  passwordHash   String?       
+  currency       String        @default("INR")
+  timezone       String        @default("Asia/Kolkata")
+  avatarUrl      String?
+  oauthProvider  OAuthProvider @default(LOCAL)
+  oauthId        String?       
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  // Relations
+  preferences        UserPreferences?
+  expenses           Expense[]
+  categories         Category[]
+  budgets            Budget[]
+  recurringExpenses  RecurringExpense[]
+
+
+  @@map("users")
+}
+
+model UserPreferences {
+  id                String   @id @default(uuid())
+  userId            String   @unique
+  darkMode          Boolean  @default(false)
+  emailAlerts       Boolean  @default(true)
+  pushAlerts        Boolean  @default(true)
+  language          String   @default("en")
+  defaultCategoryId String?
+  updatedAt         DateTime @updatedAt
+
+
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  defaultCategory Category? @relation(fields: [defaultCategoryId], references: [id], onDelete: SetNull)
+
+  @@map("user_preferences")
+}
+
+// ============================================================
+// CATEGORIES
+// ============================================================
+
+model Category {
+  id        String   @id @default(uuid())
+  userId    String
+  name      String
+  icon      String   @default("tag")
+  colorHex  String   @default("#6366f1")
+  parentId  String?  
+  isSystem  Boolean  @default(false) 
+  createdAt DateTime @default(now())
+
+  // Relations
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parent            Category?         @relation("CategoryChildren", fields: [parentId], references: [id], onDelete: SetNull)
+  children          Category[]        @relation("CategoryChildren")
+  expenses          Expense[]
+  budgets           Budget[]
+  recurringExpenses RecurringExpense[]
+  userPreferences   UserPreferences[]
+
+  @@unique([userId, name]) 
+  @@map("categories")
+}
+
+// ============================================================
+// EXPENSES
+// ============================================================
+
+model Expense {
+  id           String        @id @default(uuid())
+  userId       String
+  categoryId   String
+  amount       Decimal       @db.Decimal(12, 2)
+  currency     String        @default("INR")
+  amountBase   Decimal       @db.Decimal(12, 2) 
+  description  String
+  expenseDate  DateTime      @db.Date
+  status       ExpenseStatus @default(ACTIVE)
+  isRecurring  Boolean       @default(false)
+  recurringId  String?       
+  tags         Json          @default("[]")
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  // Relations
+  user              User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category          Category          @relation(fields: [categoryId], references: [id])
+  recurringExpense  RecurringExpense?  @relation(fields: [recurringId], references: [id], onDelete: SetNull)
+
+
+  // Indexes for common queries
+  @@index([userId, expenseDate])
+  @@index([userId, categoryId])
+  @@index([userId, status])
+  @@map("expenses")
+}
+
+// ============================================================
+// RECURRING EXPENSES
+// ============================================================
+
+model RecurringExpense {
+  id             String       @id @default(uuid())
+  userId         String
+  categoryId     String
+  amount         Decimal      @db.Decimal(12, 2)
+  currency       String       @default("INR")
+  description    String
+  scheduleType   ScheduleType
+  scheduleDay    Int?        
+  startDate      DateTime     @db.Date
+  endDate        DateTime?    @db.Date
+  lastTriggered  DateTime?
+  nextDueDate    DateTime     @db.Date
+  isActive       Boolean      @default(true)
+  tags           Json         @default("[]")
+  createdAt      DateTime     @default(now())
+
+  // Relations
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category   Category   @relation(fields: [categoryId], references: [id])
+  expenses   Expense[]  
+
+  @@index([isActive, nextDueDate])
+  @@map("recurring_expenses")
+}
+
+// ============================================================
+// BUDGETS
+// ============================================================
+
+model Budget {
+  id           String       @id @default(uuid())
+  userId       String
+  categoryId   String?      
+  limitAmount  Decimal      @db.Decimal(12, 2)
+  currency     String       @default("INR")
+  period       BudgetPeriod @default(MONTHLY)
+  periodDay    Int          @default(1) 
+  startDate    DateTime     @db.Date
+  isActive     Boolean      @default(true)
+  createdAt    DateTime     @default(now())
+  updatedAt    DateTime     @updatedAt
+
+  // Relations
+  user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  category Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+
+  @@unique([userId, categoryId]) 
+  @@index([userId, isActive])
+  @@map("budgets")
+}
+
+
