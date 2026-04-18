@@ -7,27 +7,14 @@ CREATE TABLE `users` (
     `currency` VARCHAR(191) NOT NULL DEFAULT 'INR',
     `timezone` VARCHAR(191) NOT NULL DEFAULT 'Asia/Kolkata',
     `avatarUrl` VARCHAR(191) NULL,
-    `oauthProvider` ENUM('GOOGLE', 'GITHUB', 'LOCAL') NOT NULL DEFAULT 'LOCAL',
     `oauthId` VARCHAR(191) NULL,
+    `darkMode` BOOLEAN NOT NULL DEFAULT false,
+    `language` VARCHAR(191) NOT NULL DEFAULT 'en',
+    `defaultCategoryId` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
     UNIQUE INDEX `users_email_key`(`email`),
-    PRIMARY KEY (`id`)
-) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-
--- CreateTable
-CREATE TABLE `user_preferences` (
-    `id` VARCHAR(191) NOT NULL,
-    `userId` VARCHAR(191) NOT NULL,
-    `darkMode` BOOLEAN NOT NULL DEFAULT false,
-    `emailAlerts` BOOLEAN NOT NULL DEFAULT true,
-    `pushAlerts` BOOLEAN NOT NULL DEFAULT true,
-    `language` VARCHAR(191) NOT NULL DEFAULT 'en',
-    `defaultCategoryId` VARCHAR(191) NULL,
-    `updatedAt` DATETIME(3) NOT NULL,
-
-    UNIQUE INDEX `user_preferences_userId_key`(`userId`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -56,8 +43,6 @@ CREATE TABLE `expenses` (
     `amountBase` DECIMAL(12, 2) NOT NULL,
     `description` VARCHAR(191) NOT NULL,
     `expenseDate` DATE NOT NULL,
-    `status` ENUM('ACTIVE', 'DELETED') NOT NULL DEFAULT 'ACTIVE',
-    `isRecurring` BOOLEAN NOT NULL DEFAULT false,
     `recurringId` VARCHAR(191) NULL,
     `tags` JSON NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -65,7 +50,6 @@ CREATE TABLE `expenses` (
 
     INDEX `expenses_userId_expenseDate_idx`(`userId`, `expenseDate`),
     INDEX `expenses_userId_categoryId_idx`(`userId`, `categoryId`),
-    INDEX `expenses_userId_status_idx`(`userId`, `status`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -99,8 +83,6 @@ CREATE TABLE `budgets` (
     `limitAmount` DECIMAL(12, 2) NOT NULL,
     `currency` VARCHAR(191) NOT NULL DEFAULT 'INR',
     `period` ENUM('MONTHLY', 'ROLLING_30', 'PAYCHECK') NOT NULL DEFAULT 'MONTHLY',
-    `periodDay` INTEGER NOT NULL DEFAULT 1,
-    `startDate` DATE NOT NULL,
     `isActive` BOOLEAN NOT NULL DEFAULT true,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
@@ -111,10 +93,7 @@ CREATE TABLE `budgets` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- AddForeignKey
-ALTER TABLE `user_preferences` ADD CONSTRAINT `user_preferences_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE `user_preferences` ADD CONSTRAINT `user_preferences_defaultCategoryId_fkey` FOREIGN KEY (`defaultCategoryId`) REFERENCES `categories`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `users` ADD CONSTRAINT `users_defaultCategoryId_fkey` FOREIGN KEY (`defaultCategoryId`) REFERENCES `categories`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `categories` ADD CONSTRAINT `categories_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;
