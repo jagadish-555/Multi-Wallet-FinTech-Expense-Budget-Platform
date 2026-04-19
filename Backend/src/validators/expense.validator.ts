@@ -16,14 +16,16 @@ export const createExpenseSchema = z.object({
 
 export const updateExpenseSchema = createExpenseSchema.partial();
 
-export const expenseFilterSchema = z.object({
+const expenseFilterBaseSchema = z.object({
   categoryId: z.string().uuid('Invalid category ID').optional(),
   from: dateSchema.optional(),
   to: dateSchema.optional(),
   tags: z.array(z.string()).optional(),
   page: z.coerce.number().int().positive().default(1),
   limit: z.coerce.number().int().positive().max(100).default(20),
-}).refine((data) => {
+});
+
+export const expenseFilterSchema = expenseFilterBaseSchema.refine((data) => {
   if (!data.from || !data.to) {
     return true;
   }

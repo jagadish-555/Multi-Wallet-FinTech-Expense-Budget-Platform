@@ -10,7 +10,7 @@ export const notificationController = {
   }),
 
   markAsRead: asyncHandler(async (req: Request, res: Response) => {
-    await notificationService.markAsRead(req.user!.id, req.params.id);
+    await notificationService.markAsRead(req.user!.id, String(req.params.id));
     res.status(200).json(new ApiResponse(200, null, 'Notification marked as read'));
   }),
 
@@ -20,7 +20,7 @@ export const notificationController = {
   }),
 
   delete: asyncHandler(async (req: Request, res: Response) => {
-    await notificationService.delete(req.user!.id, req.params.id);
+    await notificationService.delete(req.user!.id, String(req.params.id));
     res.status(200).json(new ApiResponse(200, null, 'Notification deleted'));
   }),
 };

@@ -25,7 +25,7 @@ export async function runRecurringExpenseJob(): Promise<void> {
           currency:    schedule.currency,
           description: schedule.description,
           expenseDate: new Date(),
-          tags:        schedule.tags,
+          tags:        schedule.tags as never,
           recurringId: schedule.id,
         },
       });

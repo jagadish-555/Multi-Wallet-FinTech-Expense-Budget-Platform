@@ -122,12 +122,12 @@ export class ExpenseRepository {
 
     const rows = await prisma.$queryRaw<{ month: string; total: number }[]>`
       SELECT
-        DATE_FORMAT(expense_date, '%Y-%m') AS month,
-        CAST(SUM(amount_base) AS DECIMAL(12,2)) AS total
+        DATE_FORMAT(expenseDate, '%Y-%m') AS month,
+        CAST(SUM(amountBase) AS DECIMAL(12,2)) AS total
       FROM expenses
-      WHERE user_id = ${userId}
+      WHERE userId = ${userId}
         AND status = 'ACTIVE'
-        AND expense_date >= ${from}
+        AND expenseDate >= ${from}
       GROUP BY month
       ORDER BY month ASC
     `;

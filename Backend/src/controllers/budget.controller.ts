@@ -15,12 +15,12 @@ export const budgetController = {
   }),
 
   update: asyncHandler(async (req: Request, res: Response) => {
-    const budget = await budgetService.update(req.user!.id, req.params.id, req.body);
+    const budget = await budgetService.update(req.user!.id, String(req.params.id), req.body);
     res.status(200).json(new ApiResponse(200, budget, 'Budget updated successfully'));
   }),
 
   delete: asyncHandler(async (req: Request, res: Response) => {
-    await budgetService.delete(req.user!.id, req.params.id);
+    await budgetService.delete(req.user!.id, String(req.params.id));
     res.status(200).json(new ApiResponse(200, null, 'Budget deleted successfully'));
   }),
 };

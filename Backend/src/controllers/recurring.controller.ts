@@ -10,7 +10,7 @@ export const recurringController = {
   }),
 
   getById: asyncHandler(async (req: Request, res: Response) => {
-    const schedule = await recurringService.getById(req.user!.id, req.params.id);
+    const schedule = await recurringService.getById(req.user!.id, String(req.params.id));
     res.status(200).json(new ApiResponse(200, schedule, 'Recurring expense fetched successfully'));
   }),
 
@@ -20,22 +20,22 @@ export const recurringController = {
   }),
 
   update: asyncHandler(async (req: Request, res: Response) => {
-    const schedule = await recurringService.update(req.user!.id, req.params.id, req.body);
+    const schedule = await recurringService.update(req.user!.id, String(req.params.id), req.body);
     res.status(200).json(new ApiResponse(200, schedule, 'Recurring expense updated successfully'));
   }),
 
   pause: asyncHandler(async (req: Request, res: Response) => {
-    await recurringService.pause(req.user!.id, req.params.id);
+    await recurringService.pause(req.user!.id, String(req.params.id));
     res.status(200).json(new ApiResponse(200, null, 'Recurring expense paused'));
   }),
 
   resume: asyncHandler(async (req: Request, res: Response) => {
-    await recurringService.resume(req.user!.id, req.params.id);
+    await recurringService.resume(req.user!.id, String(req.params.id));
     res.status(200).json(new ApiResponse(200, null, 'Recurring expense resumed'));
   }),
 
   delete: asyncHandler(async (req: Request, res: Response) => {
-    await recurringService.delete(req.user!.id, req.params.id);
+    await recurringService.delete(req.user!.id, String(req.params.id));
     res.status(200).json(new ApiResponse(200, null, 'Recurring expense deleted'));
   }),
 };

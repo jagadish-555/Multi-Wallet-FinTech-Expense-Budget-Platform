@@ -6,7 +6,7 @@ const dateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Date must be in YYYY
 
 export const scheduleTypeSchema = z.enum(['DAILY', 'WEEKLY', 'MONTHLY', 'YEARLY']);
 
-export const createRecurringExpenseSchema = z.object({
+const recurringBaseSchema = z.object({
   categoryId: z.string().uuid('Invalid category ID'),
   amount: amountSchema,
   currency: z.string().length(3, 'Currency must be 3 characters').default('INR'),
@@ -17,7 +17,9 @@ export const createRecurringExpenseSchema = z.object({
   endDate: dateSchema.optional().nullable(),
   isActive: z.boolean().default(true),
   tags: z.array(z.string()).default([]),
-}).refine((data) => {
+});
+
+export const createRecurringExpenseSchema = recurringBaseSchema.refine((data) => {
   if (!data.endDate) {
     return true;
   }
@@ -28,7 +30,7 @@ export const createRecurringExpenseSchema = z.object({
   path: ['startDate'],
 });
 
-export const updateRecurringExpenseSchema = createRecurringExpenseSchema.partial();
+export const updateRecurringExpenseSchema = recurringBaseSchema.partial();
 
 export type ScheduleTypeInput = z.infer<typeof scheduleTypeSchema>;
 export type CreateRecurringExpenseInput = z.infer<typeof createRecurringExpenseSchema>;
