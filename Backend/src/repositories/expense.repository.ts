@@ -93,7 +93,7 @@ export class ExpenseRepository {
   async softDelete(id: string) {
     return prisma.expense.update({
       where: { id },
-      data: { status: 'DELETED' },
+      data: { status: 'DELETED' } as Prisma.ExpenseUpdateInput,
     });
   }
 
