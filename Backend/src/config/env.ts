@@ -11,7 +11,8 @@ const envSchema = z.object({
   JWT_REFRESH_EXPIRES_IN: z.string().default('7d'),
   PORT: z.coerce.number().int().positive().default(3000),
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
-  CLIENT_URL: z.string().url().default('http://localhost:5173'),
+  CLIENT_URL: z.string().min(1).default('http://localhost:5173')
+    .transform((str) => str.split(',').map(url => url.trim())),
   EXCHANGE_RATE_API_KEY: z.string().optional(),
 });
 
