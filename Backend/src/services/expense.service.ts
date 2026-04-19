@@ -9,13 +9,9 @@ import {
 } from '../validators/expense.validator';
 
 export class ExpenseService {
-  // ─── List ──────────────────────────────────────────────────────────────────
-
   async getAll(userId: string, filters: ExpenseFilterInput) {
     return expenseRepository.findMany(userId, filters);
   }
-
-  // ─── Get One ───────────────────────────────────────────────────────────────
 
   async getById(userId: string, expenseId: string) {
     const expense = await expenseRepository.findById(expenseId, userId);
@@ -27,10 +23,7 @@ export class ExpenseService {
     return expense;
   }
 
-  // ─── Create ────────────────────────────────────────────────────────────────
-
   async create(userId: string, input: CreateExpenseInput) {
-    // Verify the category exists and is accessible to this user
     const category = await categoryRepository.findById(input.categoryId);
 
     if (!category) {
@@ -44,7 +37,6 @@ export class ExpenseService {
 
     const expense = await expenseRepository.create(userId, input);
 
-    // Emit event — budget alert listener and analytics cache will hook in later
     const payload: ExpenseAddedPayload = {
       userId,
       expenseId:  expense.id,
@@ -57,13 +49,9 @@ export class ExpenseService {
     return expense;
   }
 
-  // ─── Update ────────────────────────────────────────────────────────────────
-
   async update(userId: string, expenseId: string, input: UpdateExpenseInput) {
-    // Confirm ownership before touching the record
     await this.getById(userId, expenseId);
 
-    // If categoryId is changing, verify the new category is accessible
     if (input.categoryId) {
       const category = await categoryRepository.findById(input.categoryId);
 
@@ -80,10 +68,7 @@ export class ExpenseService {
     return expenseRepository.update(expenseId, userId, input);
   }
 
-  // ─── Delete (soft) ─────────────────────────────────────────────────────────
-
   async delete(userId: string, expenseId: string) {
-    // Confirm ownership — findById only returns ACTIVE expenses for this user
     await this.getById(userId, expenseId);
 
     return expenseRepository.softDelete(expenseId);

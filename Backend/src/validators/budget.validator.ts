@@ -9,6 +9,7 @@ export const createBudgetSchema = z.object({
   limitAmount: amountSchema,
   currency: z.string().length(3, 'Currency must be 3 characters').default('INR'),
   period: budgetPeriodSchema.default('MONTHLY'),
+  periodDay: z.coerce.number().int().min(1).max(28).optional(),
   isActive: z.boolean().default(true),
 });
 
@@ -17,3 +18,4 @@ export const updateBudgetSchema = createBudgetSchema.partial();
 export type BudgetPeriodInput = z.infer<typeof budgetPeriodSchema>;
 export type CreateBudgetInput = z.infer<typeof createBudgetSchema>;
 export type UpdateBudgetInput = z.infer<typeof updateBudgetSchema>;
+

@@ -26,6 +26,11 @@ enum BudgetPeriod {
   PAYCHECK
 }
 
+enum NotificationType {
+  BUDGET_WARNING
+  BUDGET_EXCEEDED
+}
+
 
 
 model User {
@@ -50,6 +55,7 @@ model User {
   expenses           Expense[]
   categories         Category[]
   budgets            Budget[]
+  notifications      Notification[]
   recurringExpenses  RecurringExpense[]
   defaultCategory    Category? @relation("UserDefaultCategory", fields: [defaultCategoryId], references: [id], onDelete: SetNull)
 
@@ -156,4 +162,19 @@ model Budget {
   @@unique([userId, categoryId]) 
   @@index([userId, isActive])
   @@map("budgets")
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String
+  type      NotificationType
+  message   String
+  budgetId  String?
+  isRead    Boolean          @default(false)
+  createdAt DateTime         @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead])
+  @@map("notifications")
 }
