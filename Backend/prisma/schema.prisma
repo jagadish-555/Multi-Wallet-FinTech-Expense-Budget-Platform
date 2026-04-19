@@ -9,7 +9,6 @@ enum ExpenseStatus {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
 }
 
 
@@ -141,10 +140,11 @@ model RecurringExpense {
 model Budget {
   id           String       @id @default(uuid())
   userId       String
-  categoryId   String?      
+  categoryId   String?
   limitAmount  Decimal      @db.Decimal(12, 2)
   currency     String       @default("INR")
   period       BudgetPeriod @default(MONTHLY)
+  periodDay    Int?         
   isActive     Boolean      @default(true)
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt

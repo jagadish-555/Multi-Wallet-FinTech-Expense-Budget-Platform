@@ -3,16 +3,11 @@ import { ApiError } from '../utils/ApiError';
 import { CreateCategoryInput, UpdateCategoryInput } from '../validators/category.validator';
 
 export class CategoryService {
-  // ─── List ──────────────────────────────────────────────────────────────────
-
   async getAll(userId: string) {
     return categoryRepository.findAllByUser(userId);
   }
 
-  // ─── Create ────────────────────────────────────────────────────────────────
-
   async create(userId: string, input: CreateCategoryInput) {
-    // If a parentId is provided, verify the parent exists and belongs to this user
     if (input.parentId) {
       const parent = await categoryRepository.findById(input.parentId);
 
@@ -29,8 +24,6 @@ export class CategoryService {
     return categoryRepository.create(userId, input);
   }
 
-  // ─── Update ────────────────────────────────────────────────────────────────
-
   async update(userId: string, categoryId: string, input: UpdateCategoryInput) {
     const category = await this.getOwnedCategory(userId, categoryId);
 
@@ -40,8 +33,6 @@ export class CategoryService {
 
     return categoryRepository.update(categoryId, input);
   }
-
-  // ─── Delete ────────────────────────────────────────────────────────────────
 
   async delete(userId: string, categoryId: string) {
     const category = await this.getOwnedCategory(userId, categoryId);
@@ -60,12 +51,6 @@ export class CategoryService {
     return categoryRepository.delete(categoryId);
   }
 
-  // ─── Private Helpers ───────────────────────────────────────────────────────
-
-  /**
-   * Fetches a category and ensures it exists and belongs to this user.
-   * System categories are included so we can explicitly block edits/deletes on them.
-   */
   private async getOwnedCategory(userId: string, categoryId: string) {
     const category = await categoryRepository.findById(categoryId);
 
@@ -73,7 +58,6 @@ export class CategoryService {
       throw ApiError.notFound('Category not found');
     }
 
-    // System categories are readable by all, but no one "owns" them
     if (!category.isSystem && category.userId !== userId) {
       throw ApiError.forbidden('You do not have access to this category');
     }

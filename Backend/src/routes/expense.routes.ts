@@ -6,7 +6,6 @@ import { createExpenseSchema, updateExpenseSchema } from '../validators/expense.
 
 const router = Router();
 
-// All expense routes require authentication
 router.use(authMiddleware);
 
 router.get('/',     expenseController.getAll);

@@ -2,10 +2,6 @@ import prisma from '../config/database';
 import { CreateCategoryInput, UpdateCategoryInput } from '../validators/category.validator';
 
 export class CategoryRepository {
-  /**
-   * Returns all categories visible to a user:
-   * their own custom categories + all system categories.
-   */
   async findAllByUser(userId: string) {
     return prisma.category.findMany({
       where: {
@@ -31,7 +27,7 @@ export class CategoryRepository {
         icon: data.icon,
         colorHex: data.colorHex,
         ...(data.parentId ? { parentId: data.parentId } : {}),
-        isSystem: false, // users can never create system categories via API
+        isSystem: false,
       },
     });
   }
@@ -52,7 +48,6 @@ export class CategoryRepository {
     return prisma.category.delete({ where: { id } });
   }
 
-  /** Returns true if any active expense is linked to this category. */
   async hasExpenses(id: string): Promise<boolean> {
     const count = await prisma.expense.count({
       where: { categoryId: id },

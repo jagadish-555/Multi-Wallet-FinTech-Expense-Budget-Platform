@@ -6,7 +6,6 @@ import { createCategorySchema, updateCategorySchema } from '../validators/catego
 
 const router = Router();
 
-// All category routes require authentication
 router.use(authMiddleware);
 
 router.get('/',    categoryController.getAll);
