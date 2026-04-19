@@ -17,6 +17,7 @@ class App {
     }
 
     private config(): void {
+        this.app.set('trust proxy', 1);
         this.app.use(helmet());
         this.app.use(cors({
             origin: env.CLIENT_URL,
