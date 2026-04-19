@@ -29,14 +29,12 @@ class App {
 
     private registerRoutes(): void {
         this.app.use('/api/v1', routes);
-        // 404 for unmatched routes
         this.app.use((req, res) => {
             res.status(404).json({ success: false, message: `Route ${req.originalUrl} not found` });
         });
     }
 
     private registerErrorHandlers(): void {
-        // Must be last — catches all errors thrown by route handlers
         this.app.use(errorMiddleware);
     }
 }

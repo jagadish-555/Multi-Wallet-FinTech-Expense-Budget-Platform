@@ -7,7 +7,6 @@ import { ApiError } from '../utils/ApiError';
 import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../utils/jwt';
 
 export class AuthService {
-  // ─── Shared ────────────────────────────────────────────────────────────────
 
   private buildTokens(userId: string, email: string) {
     const payload = { userId, email };
@@ -29,8 +28,6 @@ export class AuthService {
     };
   }
 
-  // ─── Register ──────────────────────────────────────────────────────────────
-
   async register(input: RegisterInput) {
     const existing = await userRepository.findByEmail(input.email);
 
@@ -40,7 +37,6 @@ export class AuthService {
 
     const passwordHash = await bcrypt.hash(input.password, SALT_ROUNDS);
 
-    // Atomic: create user + seed system categories together
     const user = await prisma.$transaction(async (tx) => {
       const createdUser = await tx.user.create({
         data: {
@@ -72,12 +68,9 @@ export class AuthService {
     };
   }
 
-  // ─── Login ─────────────────────────────────────────────────────────────────
-
   async login(input: LoginInput) {
     const user = await userRepository.findByEmail(input.email);
 
-    // Deliberately vague — don't reveal whether the email exists
     if (!user || !user.passwordHash) {
       throw ApiError.unauthorized('Invalid email or password');
     }
@@ -96,8 +89,6 @@ export class AuthService {
     };
   }
 
-  // ─── Refresh ───────────────────────────────────────────────────────────────
-
   async refresh(token: string) {
     let payload;
 
@@ -107,7 +98,6 @@ export class AuthService {
       throw ApiError.unauthorized('Invalid or expired refresh token');
     }
 
-    // Ensure user still exists
     const user = await prisma.user.findUnique({
       where: { id: payload.userId },
       select: { id: true, email: true },
@@ -121,8 +111,6 @@ export class AuthService {
       accessToken: signAccessToken({ userId: user.id, email: user.email }),
     };
   }
-
-  // ─── Get Me ────────────────────────────────────────────────────────────────
 
   async getMe(userId: string) {
     const user = await prisma.user.findUnique({

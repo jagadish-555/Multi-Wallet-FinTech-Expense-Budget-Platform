@@ -2,6 +2,11 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum ExpenseStatus {
+  ACTIVE
+  DELETED
+}
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
@@ -89,6 +94,7 @@ model Expense {
   
 
   recurringId  String?       
+  status       ExpenseStatus @default(ACTIVE)
   tags         Json          @default("[]")
   
   createdAt    DateTime      @default(now())
@@ -102,6 +108,7 @@ model Expense {
 
   @@index([userId, expenseDate])
   @@index([userId, categoryId])
+  @@index([userId, status])
   @@map("expenses")
 }
 
