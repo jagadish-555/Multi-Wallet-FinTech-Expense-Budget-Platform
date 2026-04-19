@@ -4,9 +4,33 @@ import { SALT_ROUNDS, SYSTEM_CATEGORIES } from '../config/constants';
 import { userRepository } from '../repositories/user.repository';
 import { RegisterInput, LoginInput } from '../validators/auth.validator';
 import { ApiError } from '../utils/ApiError';
-import { signAccessToken } from '../utils/jwt';
+import { signAccessToken, signRefreshToken, verifyRefreshToken } from '../utils/jwt';
 
 export class AuthService {
+  // ─── Shared ────────────────────────────────────────────────────────────────
+
+  private buildTokens(userId: string, email: string) {
+    const payload = { userId, email };
+    return {
+      accessToken: signAccessToken(payload),
+      refreshToken: signRefreshToken(payload),
+    };
+  }
+
+  private safeUser(user: {
+    id: string; name: string; email: string; currency: string; createdAt: Date;
+  }) {
+    return {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      currency: user.currency,
+      createdAt: user.createdAt,
+    };
+  }
+
+  // ─── Register ──────────────────────────────────────────────────────────────
+
   async register(input: RegisterInput) {
     const existing = await userRepository.findByEmail(input.email);
 
@@ -16,6 +40,7 @@ export class AuthService {
 
     const passwordHash = await bcrypt.hash(input.password, SALT_ROUNDS);
 
+    // Atomic: create user + seed system categories together
     const user = await prisma.$transaction(async (tx) => {
       const createdUser = await tx.user.create({
         data: {
@@ -39,22 +64,20 @@ export class AuthService {
       return createdUser;
     });
 
-    const payload = { userId: user.id, email: user.email };
+    const tokens = this.buildTokens(user.id, user.email);
 
     return {
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        currency: user.currency,
-      },
-      accessToken: signAccessToken(payload),
+      user: this.safeUser(user),
+      ...tokens,
     };
   }
+
+  // ─── Login ─────────────────────────────────────────────────────────────────
 
   async login(input: LoginInput) {
     const user = await userRepository.findByEmail(input.email);
 
+    // Deliberately vague — don't reveal whether the email exists
     if (!user || !user.passwordHash) {
       throw ApiError.unauthorized('Invalid email or password');
     }
@@ -65,17 +88,64 @@ export class AuthService {
       throw ApiError.unauthorized('Invalid email or password');
     }
 
-    const payload = { userId: user.id, email: user.email };
+    const tokens = this.buildTokens(user.id, user.email);
 
     return {
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        currency: user.currency,
-      },
-      accessToken: signAccessToken(payload),
+      user: this.safeUser(user),
+      ...tokens,
     };
+  }
+
+  // ─── Refresh ───────────────────────────────────────────────────────────────
+
+  async refresh(token: string) {
+    let payload;
+
+    try {
+      payload = verifyRefreshToken(token);
+    } catch {
+      throw ApiError.unauthorized('Invalid or expired refresh token');
+    }
+
+    // Ensure user still exists
+    const user = await prisma.user.findUnique({
+      where: { id: payload.userId },
+      select: { id: true, email: true },
+    });
+
+    if (!user) {
+      throw ApiError.unauthorized('User no longer exists');
+    }
+
+    return {
+      accessToken: signAccessToken({ userId: user.id, email: user.email }),
+    };
+  }
+
+  // ─── Get Me ────────────────────────────────────────────────────────────────
+
+  async getMe(userId: string) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        currency: true,
+        timezone: true,
+        avatarUrl: true,
+        darkMode: true,
+        language: true,
+        createdAt: true,
+        updatedAt: true,
+      },
+    });
+
+    if (!user) {
+      throw ApiError.notFound('User not found');
+    }
+
+    return user;
   }
 }
 
