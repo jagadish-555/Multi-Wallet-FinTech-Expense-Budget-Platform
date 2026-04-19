@@ -13,4 +13,4 @@ function startServer() {
     }
 }
 
-startServer;
+startServer();

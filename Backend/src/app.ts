@@ -1,19 +1,19 @@
 import express from 'express';
-import bodyParser from 'body-parser';
 import cors from 'cors';
 import helmet from 'helmet';
 import { env } from './config/env';
 import { errorMiddleware } from './middlewares/error.middleware';
 import { globalLimiter } from './middlewares/rateLimiter.middleware';
-
-
+import routes from './routes';
 
 class App {
     public app: express.Application;
+
     constructor() {
         this.app = express();
         this.config();
         this.registerRoutes();
+        this.registerErrorHandlers();
     }
 
     private config(): void {
@@ -23,26 +23,22 @@ class App {
             credentials: true,
         }));
         this.app.use(globalLimiter);
-        this.app.use(bodyParser.json());
-        this.app.use(bodyParser.urlencoded({ extended: true }));
+        this.app.use(express.json({ limit: '10mb' }));
+        this.app.use(express.urlencoded({ extended: true }));
     }
 
-    private registerRoutes():void {
-        const router = express.Router();
-        router.get('/',(req,res)=>{
-            res.status(200).send('Hello, World!');
-        });
-        this.app.use("/api",router)
+    private registerRoutes(): void {
+        this.app.use('/api/v1', routes);
+        // 404 for unmatched routes
         this.app.use((req, res) => {
             res.status(404).json({ success: false, message: `Route ${req.originalUrl} not found` });
         });
-        this.app.use(errorMiddleware);
     }
 
+    private registerErrorHandlers(): void {
+        // Must be last — catches all errors thrown by route handlers
+        this.app.use(errorMiddleware);
+    }
 }
 
-
-
-
 export default new App().app;
-
