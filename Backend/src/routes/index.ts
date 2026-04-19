@@ -4,6 +4,7 @@ import categoryRoutes     from './category.routes';
 import expenseRoutes      from './expense.routes';
 import budgetRoutes       from './budget.routes';
 import notificationRoutes from './notification.routes';
+import analyticsRoutes    from './analytics.routes';
 
 const router = Router();
 
@@ -12,6 +13,7 @@ router.use('/categories',    categoryRoutes);
 router.use('/expenses',      expenseRoutes);
 router.use('/budgets',       budgetRoutes);
 router.use('/notifications', notificationRoutes);
+router.use('/analytics',     analyticsRoutes);
 
 router.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });

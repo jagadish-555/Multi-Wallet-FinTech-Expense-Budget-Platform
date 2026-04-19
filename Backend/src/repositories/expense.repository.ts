@@ -105,6 +105,35 @@ export class ExpenseRepository {
       orderBy: { _sum: { amountBase: 'desc' } },
     });
   }
+
+  async sumTotal(userId: string, from: Date, to: Date): Promise<number> {
+    const result = await prisma.expense.aggregate({
+      where: { userId, status: 'ACTIVE', expenseDate: { gte: from, lte: to } },
+      _sum: { amountBase: true },
+    });
+    return Number(result._sum.amountBase ?? 0);
+  }
+
+  async sumByMonth(userId: string, months: number): Promise<{ month: string; total: number }[]> {
+    const from = new Date();
+    from.setMonth(from.getMonth() - (months - 1));
+    from.setDate(1);
+    from.setHours(0, 0, 0, 0);
+
+    const rows = await prisma.$queryRaw<{ month: string; total: number }[]>`
+      SELECT
+        DATE_FORMAT(expense_date, '%Y-%m') AS month,
+        CAST(SUM(amount_base) AS DECIMAL(12,2)) AS total
+      FROM expenses
+      WHERE user_id = ${userId}
+        AND status = 'ACTIVE'
+        AND expense_date >= ${from}
+      GROUP BY month
+      ORDER BY month ASC
+    `;
+
+    return rows.map((r) => ({ month: r.month, total: Number(r.total) }));
+  }
 }
 
 export const expenseRepository = new ExpenseRepository();
