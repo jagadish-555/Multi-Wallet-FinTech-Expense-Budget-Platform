@@ -1,8 +1,8 @@
 import { useState, useCallback } from 'react'
 import { useExpenses } from '@/hooks/useExpenses'
 import { useCategories } from '@/hooks/useCategories'
-import { expenseApi } from '@/api/expense.api'
-import { useAuthStore } from '@/store/auth.store'
+// import { expenseApi } from '@/api/expense.api'
+// import { useAuthStore } from '@/store/auth.store'
 import type { Expense, ExpenseFilters } from '@/types'
 import ExpenseTable from '@/components/expenses/ExpenseTable'
 import ExpenseFiltersBar from '@/components/expenses/ExpenseFilters'
@@ -10,10 +10,11 @@ import ExpenseForm from '@/components/expenses/ExpenseForm'
 import ExpenseDeleteDialog from '@/components/expenses/ExpenseDeleteDialog'
 import Modal from '@/components/ui/Modal'
 import Button from '@/components/ui/Button'
-import { Plus, Download } from 'lucide-react'
+// import { Plus, Download } from 'lucide-react'
+import { Plus } from 'lucide-react'
 
 export default function ExpensesPage() {
-  const user = useAuthStore((s) => s.user)
+  // const user = useAuthStore((s) => s.user)
   const { data: categories = [] } = useCategories()
 
   const [filters, setFilters] = useState<ExpenseFilters>({ page: 1, limit: 15 })
@@ -38,6 +39,7 @@ export default function ExpensesPage() {
     []
   )
 
+  /*
   const handleExport = async () => {
     const blob = await expenseApi.exportCsv({
       from: filters.from,
@@ -51,6 +53,7 @@ export default function ExpensesPage() {
     a.click()
     URL.revokeObjectURL(url)
   }
+  */
 
   const meta = data?.meta
   const expenses = data?.expenses ?? []
@@ -75,10 +78,10 @@ export default function ExpensesPage() {
       >
         <ExpenseFiltersBar categories={categories} onFiltersChange={handleFiltersChange} />
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-          <Button variant="secondary" size="sm" onClick={handleExport}>
+          {/* <Button variant="secondary" size="sm" onClick={handleExport}>
             <Download size={14} />
             Export CSV
-          </Button>
+          </Button> */}
           <Button size="sm" onClick={() => setShowForm(true)}>
             <Plus size={14} />
             Add Expense
