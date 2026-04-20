@@ -50,7 +50,7 @@ export class RecurringRepository {
     });
   }
 
-  async update(id: string, data: UpdateRecurringExpenseInput) {
+  async update(id: string, data: UpdateRecurringExpenseInput, nextDueDate?: Date) {
     return prisma.recurringExpense.update({
       where: { id },
       data: {
@@ -60,8 +60,10 @@ export class RecurringRepository {
         ...(data.description !== undefined && { description: data.description }),
         ...(data.scheduleType !== undefined && { scheduleType: data.scheduleType }),
         ...(data.scheduleDay !== undefined && { scheduleDay: data.scheduleDay }),
+        ...(data.startDate   !== undefined && { startDate: new Date(data.startDate) }),
         ...(data.endDate     !== undefined && { endDate: data.endDate ? new Date(data.endDate) : null }),
         ...(data.tags        !== undefined && { tags: data.tags }),
+        ...(nextDueDate      !== undefined && { nextDueDate }),
       },
       include: { category: { select: { id: true, name: true, icon: true, colorHex: true } } },
     });

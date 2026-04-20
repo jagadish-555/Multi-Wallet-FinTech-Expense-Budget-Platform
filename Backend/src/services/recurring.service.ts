@@ -17,11 +17,11 @@ export function computeNextDueDate(from: Date, scheduleType: ScheduleType, sched
       break;
 
     case 'MONTHLY': {
+      const targetDay = scheduleDay || from.getDate();
+      next.setDate(1); // Prevent overflow during month shift
       next.setMonth(next.getMonth() + 1);
-      if (scheduleDay) {
-        const maxDay = new Date(next.getFullYear(), next.getMonth() + 1, 0).getDate();
-        next.setDate(Math.min(scheduleDay, maxDay));
-      }
+      const maxDay = new Date(next.getFullYear(), next.getMonth() + 1, 0).getDate();
+      next.setDate(Math.min(targetDay, maxDay));
       break;
     }
 
@@ -52,13 +52,13 @@ export class RecurringService {
     if (!accessible) throw ApiError.forbidden('You do not have access to that category');
 
     const startDate    = new Date(input.startDate);
-    const nextDueDate  = computeNextDueDate(startDate, input.scheduleType, input.scheduleDay);
+    const nextDueDate  = startDate; // Process it on the start date first!
 
     return recurringRepository.create(userId, input, nextDueDate);
   }
 
   async update(userId: string, id: string, input: UpdateRecurringExpenseInput) {
-    await this.getById(userId, id);
+    const existing = await this.getById(userId, id);
 
     if (input.categoryId) {
       const category = await categoryRepository.findById(input.categoryId);
@@ -67,7 +67,16 @@ export class RecurringService {
       if (!accessible) throw ApiError.forbidden('You do not have access to that category');
     }
 
-    return recurringRepository.update(id, input);
+    let nextDueDate: Date | undefined;
+    if (input.scheduleType || input.scheduleDay !== undefined || input.startDate) {
+      const baseDate = input.startDate ? new Date(input.startDate) : (existing.lastTriggered || existing.startDate);
+      const scheduleType = input.scheduleType || existing.scheduleType;
+      const scheduleDay = input.scheduleDay !== undefined ? input.scheduleDay : existing.scheduleDay;
+      
+      nextDueDate = input.startDate ? new Date(input.startDate) : computeNextDueDate(baseDate, scheduleType, scheduleDay);
+    }
+
+    return recurringRepository.update(id, input, nextDueDate);
   }
 
   async pause(userId: string, id: string) {

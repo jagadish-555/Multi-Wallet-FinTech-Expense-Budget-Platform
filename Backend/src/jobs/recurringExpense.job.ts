@@ -16,6 +16,12 @@ export async function runRecurringExpenseJob(): Promise<void> {
 
   for (const schedule of dueSchedules) {
     try {
+      const expenseDate = new Date(schedule.nextDueDate);
+      // Ensure we don't accidentally create expenses from the future if cron runs at 23:59:59
+      if (expenseDate > new Date()) {
+          expenseDate.setTime(Date.now());
+      }
+      
       const expense = await prisma.expense.create({
         data: {
           userId:      schedule.userId,
@@ -24,7 +30,7 @@ export async function runRecurringExpenseJob(): Promise<void> {
           amountBase:  schedule.amount,
           currency:    schedule.currency,
           description: schedule.description,
-          expenseDate: new Date(),
+          expenseDate: expenseDate,
           tags:        schedule.tags as never,
           recurringId: schedule.id,
         },
