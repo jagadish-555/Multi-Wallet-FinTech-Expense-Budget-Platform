@@ -191,7 +191,7 @@ export default function SettingsPage() {
       </div>
 
       {/* Preferences */}
-      <div style={SECTION_CARD}>
+      {/* <div style={SECTION_CARD}>
         <SectionHeader icon={Sliders} title="Preferences" />
         <div>
           <ToggleRow
@@ -220,7 +220,7 @@ export default function SettingsPage() {
             </Button>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Security */}
       <div style={SECTION_CARD}>
