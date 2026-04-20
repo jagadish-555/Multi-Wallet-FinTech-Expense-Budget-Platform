@@ -8,7 +8,8 @@ import { useToastStore } from '@/store/toast.store'
 import { useUpdateProfile, useUpdatePreferences, useChangePassword } from '@/hooks/useAuth'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
-import { User, Sliders, Shield } from 'lucide-react'
+import { User, Shield } from 'lucide-react'
+// import { User, Sliders, Shield } from 'lucide-react'
 
 type ProfileFormData = z.infer<typeof updateProfileSchema>
 type PasswordFormData = z.infer<typeof changePasswordSchema>
