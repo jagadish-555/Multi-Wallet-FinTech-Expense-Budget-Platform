@@ -1,15 +1,15 @@
-import { useEffect, useState } from 'react'
+import { useEffect /*, useState */ } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { z } from 'zod'
 import { updateProfileSchema, changePasswordSchema } from '@/lib/validators'
 import { useAuthStore } from '@/store/auth.store'
 import { useToastStore } from '@/store/toast.store'
-import { useUpdateProfile, useUpdatePreferences, useChangePassword } from '@/hooks/useAuth'
+import { useUpdateProfile, /* useUpdatePreferences, */ useChangePassword } from '@/hooks/useAuth'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
+// import { User, Shield, Sliders } from 'lucide-react'
 import { User, Shield } from 'lucide-react'
-// import { User, Sliders, Shield } from 'lucide-react'
 
 type ProfileFormData = z.infer<typeof updateProfileSchema>
 type PasswordFormData = z.infer<typeof changePasswordSchema>
@@ -50,6 +50,7 @@ function SectionHeader({ icon: Icon, title }: { icon: React.ElementType; title: 
   )
 }
 
+/*
 function ToggleRow({ label, sub, checked, onChange }: { label: string; sub: string; checked: boolean; onChange: () => void }) {
   return (
     <div
@@ -80,16 +81,19 @@ function ToggleRow({ label, sub, checked, onChange }: { label: string; sub: stri
     </div>
   )
 }
+*/
 
 export default function SettingsPage() {
   const user = useAuthStore((s) => s.user)
   const addToast = useToastStore((s) => s.addToast)
   const updateProfile = useUpdateProfile()
-  const updatePreferences = useUpdatePreferences()
+  // const updatePreferences = useUpdatePreferences()
   const changePassword = useChangePassword()
 
+  /*
   const [emailNotifications, setEmailNotifications] = useState(true)
   const [startOfWeek, setStartOfWeek] = useState('MONDAY')
+  */
 
   const profileForm = useForm<ProfileFormData>({
     resolver: zodResolver(updateProfileSchema),
@@ -122,6 +126,7 @@ export default function SettingsPage() {
     }
   }
 
+  /*
   const onPreferencesSubmit = async () => {
     try {
       await updatePreferences.mutateAsync({ emailNotifications, startOfWeek })
@@ -130,6 +135,7 @@ export default function SettingsPage() {
       addToast('Unable to update preferences', 'error')
     }
   }
+  */
 
   const onPasswordSubmit = async (data: PasswordFormData) => {
     try {
@@ -192,7 +198,8 @@ export default function SettingsPage() {
       </div>
 
       {/* Preferences */}
-      {/* <div style={SECTION_CARD}>
+      {/*
+      <div style={SECTION_CARD}>
         <SectionHeader icon={Sliders} title="Preferences" />
         <div>
           <ToggleRow
@@ -221,7 +228,8 @@ export default function SettingsPage() {
             </Button>
           </div>
         </div>
-      </div> */}
+      </div>
+      */}
 
       {/* Security */}
       <div style={SECTION_CARD}>
