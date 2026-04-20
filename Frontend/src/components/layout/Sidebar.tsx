@@ -17,7 +17,7 @@ const navItems = [
   { to: '/expenses',   icon: Receipt,          label: 'Expenses' },
   { to: '/budgets',    icon: Target,           label: 'Budgets' },
   { to: '/categories', icon: Tag,              label: 'Categories' },
-  { to: '/recurring',  icon: RefreshCw,        label: 'Recurring' },
+  // { to: '/recurring',  icon: RefreshCw,        label: 'Recurring' },
   { to: '/analytics',  icon: BarChart3,        label: 'Analytics' },
   { to: '/settings',   icon: Settings,         label: 'Settings' },
 ]
