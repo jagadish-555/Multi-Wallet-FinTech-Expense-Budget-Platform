@@ -3,6 +3,16 @@ import Badge from '@/components/ui/Badge'
 import Button from '@/components/ui/Button'
 import EmptyState from '@/components/ui/EmptyState'
 import { Tags, Pencil, Trash2 } from 'lucide-react'
+import * as Icons from 'lucide-react'
+
+
+const DynamicIcon = ({ name, color }: { name: string, color: string }) => {
+  const toPascalCase = (str: string) => str.replace(/(^\w|-\w)/g, (clearAndDir) => clearAndDir.replace(/-/, "").toUpperCase());
+  
+  const IconComponent = (Icons as any)[toPascalCase(name)] || Icons.Tags;
+  
+  return <IconComponent size={20} color={color} />;
+}
 
 interface CategoryListProps {
   categories: Category[]
@@ -28,10 +38,10 @@ export default function CategoryList({ categories, onEdit, onDelete }: CategoryL
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3 min-w-0">
               <div
-                className="w-10 h-10 rounded-full flex items-center justify-center text-xl"
+                className="flex h-10 w-10 items-center justify-center rounded-full flex-shrink-0"
                 style={{ backgroundColor: `${category.colorHex}22` }}
               >
-                {category.icon}
+                <DynamicIcon name={category.icon || 'tags'} color={category.colorHex} />
               </div>
               <div className="min-w-0">
                 <p className="text-sm font-semibold text-gray-900 truncate">{category.name}</p>
