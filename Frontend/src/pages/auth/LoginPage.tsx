@@ -14,7 +14,7 @@ export default function LoginPage() {
   const navigate = useNavigate()
   const location = useLocation()
   const from = (location.state as { from?: { pathname: string } })?.from?.pathname ?? '/dashboard'
-  const { mutateAsync: login } = useLogin()
+  const { mutateAsync: login, isPending: isGuestLoading } = useLogin()
   const [serverError, setServerError] = useState('')
 
   const {
@@ -30,6 +30,17 @@ export default function LoginPage() {
       navigate(from, { replace: true })
     } catch (err: unknown) {
       const msg = (err as { message?: string })?.message ?? 'Login failed'
+      setServerError(msg)
+    }
+  }
+
+  const handleGuestLogin = async () => {
+    setServerError('')
+    try {
+      await login({ email: 'test@example.com', password: 'Password123' })
+      navigate(from, { replace: true })
+    } catch (err: unknown) {
+      const msg = (err as { message?: string })?.message ?? 'Guest login failed'
       setServerError(msg)
     }
   }
@@ -156,6 +167,17 @@ export default function LoginPage() {
               Sign in
             </Button>
           </form>
+
+          <Button
+            type="button"
+            variant="secondary"
+            size="lg"
+            loading={isGuestLoading}
+            style={{ width: '100%', marginTop: '16px' }}
+            onClick={handleGuestLogin}
+          >
+            Continue as Guest
+          </Button>
 
           {/* Divider */}
           <div

@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Link, useNavigate } from 'react-router-dom'
 import type { z } from 'zod'
 import { registerSchema } from '@/lib/validators'
-import { useRegister } from '@/hooks/useAuth'
+import { useRegister, useLogin } from '@/hooks/useAuth'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
 
@@ -25,6 +25,7 @@ function getPasswordStrength(pwd: string): { label: string; color: string; width
 export default function RegisterPage() {
   const navigate = useNavigate()
   const { mutateAsync: register } = useRegister()
+  const { mutateAsync: login, isPending: isGuestLoading } = useLogin()
   const [serverError, setServerError] = useState('')
   const [pwdValue, setPwdValue] = useState('')
 
@@ -45,6 +46,17 @@ export default function RegisterPage() {
       navigate('/dashboard', { replace: true })
     } catch (err: unknown) {
       const msg = (err as { message?: string })?.message ?? 'Registration failed'
+      setServerError(msg)
+    }
+  }
+
+  const handleGuestLogin = async () => {
+    setServerError('')
+    try {
+      await login({ email: 'test@example.com', password: 'Password123' })
+      navigate('/dashboard', { replace: true })
+    } catch (err: unknown) {
+      const msg = (err as { message?: string })?.message ?? 'Guest login failed'
       setServerError(msg)
     }
   }
@@ -209,6 +221,17 @@ export default function RegisterPage() {
               Create account
             </Button>
           </form>
+
+          <Button
+            type="button"
+            variant="secondary"
+            size="lg"
+            loading={isGuestLoading}
+            style={{ width: '100%', marginTop: '16px' }}
+            onClick={handleGuestLogin}
+          >
+            Continue as Guest
+          </Button>
 
           {/* Divider */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', margin: '24px 0' }}>
