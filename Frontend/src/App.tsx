@@ -12,6 +12,7 @@ import BudgetsPage from './pages/BudgetsPage'
 import RecurringPage from './pages/RecurringPage'
 import AnalyticsPage from './pages/AnalyticsPage'
 import SettingsPage from './pages/SettingsPage'
+import LandingPage from './pages/LandingPage'
 import ToastContainer from '@/components/ui/ToastContainer'
 
 function PublicOnly({ children }: { children: ReactNode }) {
@@ -61,7 +62,7 @@ export default function App() {
           <Route path="/settings" element={<SettingsPage />} />
         </Route>
 
-        <Route path="/" element={<Navigate to={accessToken ? '/dashboard' : '/login'} replace />} />
+        <Route path="/" element={<PublicOnly><LandingPage /></PublicOnly>} />
         <Route path="*" element={<Navigate to={accessToken ? '/dashboard' : '/login'} replace />} />
       </Routes>
       <ToastContainer />
