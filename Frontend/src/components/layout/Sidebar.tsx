@@ -4,7 +4,7 @@ import {
   Receipt,
   Target,
   Tag,
-  RefreshCw,
+  // RefreshCw,
   BarChart3,
   Settings,
   LogOut,
