@@ -18,7 +18,7 @@ export function computeNextDueDate(from: Date, scheduleType: ScheduleType, sched
 
     case 'MONTHLY': {
       const targetDay = scheduleDay || from.getDate();
-      next.setDate(1); // Prevent overflow during month shift
+      next.setDate(1);
       next.setMonth(next.getMonth() + 1);
       const maxDay = new Date(next.getFullYear(), next.getMonth() + 1, 0).getDate();
       next.setDate(Math.min(targetDay, maxDay));
@@ -51,10 +51,9 @@ export class RecurringService {
     const accessible = category.userId === userId || category.isSystem;
     if (!accessible) throw ApiError.forbidden('You do not have access to that category');
 
-    const startDate    = new Date(input.startDate);
-    const nextDueDate  = startDate; // Process it on the start date first!
+    const startDate = new Date(input.startDate);
+    const nextDueDate = startDate;
 
-    // Prevent date drift for MONTHLY schedules
     if (input.scheduleType === 'MONTHLY' && input.scheduleDay == null) {
       input.scheduleDay = startDate.getDate();
     }
@@ -77,7 +76,7 @@ export class RecurringService {
       const baseDate = input.startDate ? new Date(input.startDate) : (existing.lastTriggered || existing.startDate);
       const scheduleType = input.scheduleType || existing.scheduleType;
       const scheduleDay = input.scheduleDay !== undefined ? input.scheduleDay : existing.scheduleDay;
-      
+
       nextDueDate = input.startDate ? new Date(input.startDate) : computeNextDueDate(baseDate, scheduleType, scheduleDay);
     }
 

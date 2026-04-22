@@ -37,7 +37,7 @@ export default function LoginPage() {
   const handleGuestLogin = async () => {
     setServerError('')
     try {
-      await login({ email: 'test@example.com', password: 'Password123' })
+      await login({ email: 'Guest@example.com', password: 'Password123' })
       navigate(from, { replace: true })
     } catch (err: unknown) {
       const msg = (err as { message?: string })?.message ?? 'Guest login failed'

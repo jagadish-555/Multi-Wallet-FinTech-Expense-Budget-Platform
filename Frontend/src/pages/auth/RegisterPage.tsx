@@ -53,7 +53,7 @@ export default function RegisterPage() {
   const handleGuestLogin = async () => {
     setServerError('')
     try {
-      await login({ email: 'test@example.com', password: 'Password123' })
+      await login({ email: 'Guest@example.com', password: 'Password123' })
       navigate('/dashboard', { replace: true })
     } catch (err: unknown) {
       const msg = (err as { message?: string })?.message ?? 'Guest login failed'

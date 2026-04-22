@@ -6,14 +6,13 @@ declare global {
 }
 
 function parseMysqlUrl(url: string) {
-  // mysql://user:pass@host:port/database
   const u = new URL(url);
   return {
-    host:            u.hostname,
-    port:            Number(u.port) || 3306,
-    user:            u.username,
-    password:        u.password,
-    database:        u.pathname.replace(/^\//, ''),
+    host: u.hostname,
+    port: Number(u.port) || 3306,
+    user: u.username,
+    password: u.password,
+    database: u.pathname.replace(/^\//, ''),
     connectionLimit: 5,
   };
 }

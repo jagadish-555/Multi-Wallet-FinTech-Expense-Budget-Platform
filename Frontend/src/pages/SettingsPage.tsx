@@ -50,45 +50,14 @@ function SectionHeader({ icon: Icon, title }: { icon: React.ElementType; title: 
   )
 }
 
-/*
-function ToggleRow({ label, sub, checked, onChange }: { label: string; sub: string; checked: boolean; onChange: () => void }) {
-  return (
-    <div
-      style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '14px 0',
-        borderBottom: '1px solid var(--border)',
-      }}
-    >
-      <div>
-        <p style={{ fontFamily: "'Sora', sans-serif", fontSize: '14px', fontWeight: 500, color: 'var(--text-primary)', margin: 0 }}>
-          {label}
-        </p>
-        <p style={{ fontFamily: "'Sora', sans-serif", fontSize: '12px', color: 'var(--text-secondary)', margin: '3px 0 0' }}>
-          {sub}
-        </p>
-      </div>
-      <div
-        className={`toggle-switch ${checked ? 'on' : 'off'}`}
-        onClick={onChange}
-        role="switch"
-        aria-checked={checked}
-      >
-        <div className="toggle-knob" />
-      </div>
-    </div>
-  )
-}
-*/
-
 export default function SettingsPage() {
   const user = useAuthStore((s) => s.user)
   const addToast = useToastStore((s) => s.addToast)
   const updateProfile = useUpdateProfile()
   // const updatePreferences = useUpdatePreferences()
   const changePassword = useChangePassword()
+
+  const isGuest = user?.email === 'Guest@example.com'
 
   /*
   const [emailNotifications, setEmailNotifications] = useState(true)
@@ -118,6 +87,10 @@ export default function SettingsPage() {
   }, [user, profileForm])
 
   const onProfileSubmit = async (data: ProfileFormData) => {
+    if (isGuest) {
+      addToast('Guest account cannot modify profile', 'error')
+      return
+    }
     try {
       await updateProfile.mutateAsync(data)
       addToast('Profile updated', 'success')
@@ -138,6 +111,10 @@ export default function SettingsPage() {
   */
 
   const onPasswordSubmit = async (data: PasswordFormData) => {
+    if (isGuest) {
+      addToast('Guest account cannot modify profile', 'error')
+      return
+    }
     try {
       await changePassword.mutateAsync({ currentPassword: data.currentPassword, newPassword: data.newPassword })
       passwordForm.reset()

@@ -4,7 +4,7 @@ import {
   Receipt,
   Target,
   Tag,
-  // RefreshCw,
+  RefreshCw,
   BarChart3,
   Settings,
   LogOut,
@@ -13,13 +13,13 @@ import { useAuthStore } from '@/store/auth.store'
 import { useUIStore } from '@/store/ui.store'
 
 const navItems = [
-  { to: '/dashboard',  icon: LayoutDashboard, label: 'Dashboard' },
-  { to: '/expenses',   icon: Receipt,          label: 'Expenses' },
-  { to: '/budgets',    icon: Target,           label: 'Budgets' },
-  { to: '/categories', icon: Tag,              label: 'Categories' },
-  // { to: '/recurring',  icon: RefreshCw,        label: 'Recurring' },
-  { to: '/analytics',  icon: BarChart3,        label: 'Analytics' },
-  { to: '/settings',   icon: Settings,         label: 'Settings' },
+  { to: '/dashboard', icon: LayoutDashboard, label: 'Dashboard' },
+  { to: '/expenses', icon: Receipt, label: 'Expenses' },
+  { to: '/budgets', icon: Target, label: 'Budgets' },
+  { to: '/categories', icon: Tag, label: 'Categories' },
+  { to: '/recurring', icon: RefreshCw, label: 'Recurring' },
+  { to: '/analytics', icon: BarChart3, label: 'Analytics' },
+  { to: '/settings', icon: Settings, label: 'Settings' },
 ]
 
 export default function Sidebar() {
@@ -32,16 +32,16 @@ export default function Sidebar() {
     navigate('/login')
   }
 
-  const isGuest = user?.email === 'test@example.com'
+  const isGuest = user?.email === 'Guest@example.com'
 
-  const initials = isGuest 
-    ? 'G' 
+  const initials = isGuest
+    ? 'G'
     : user?.name
-        ?.split(' ')
-        .map((w) => w[0])
-        .join('')
-        .toUpperCase()
-        .slice(0, 2) || '?'
+      ?.split(' ')
+      .map((w) => w[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2) || '?'
 
   const sidebarStyle: React.CSSProperties = {
     position: 'fixed',
