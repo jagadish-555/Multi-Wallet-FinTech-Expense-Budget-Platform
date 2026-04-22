@@ -54,6 +54,11 @@ export class RecurringService {
     const startDate    = new Date(input.startDate);
     const nextDueDate  = startDate; // Process it on the start date first!
 
+    // Prevent date drift for MONTHLY schedules
+    if (input.scheduleType === 'MONTHLY' && input.scheduleDay == null) {
+      input.scheduleDay = startDate.getDate();
+    }
+
     return recurringRepository.create(userId, input, nextDueDate);
   }
 

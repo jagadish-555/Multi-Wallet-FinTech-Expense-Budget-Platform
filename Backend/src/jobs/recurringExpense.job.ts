@@ -5,22 +5,23 @@ import { appEvents } from '../events/eventEmitter';
 import { computeNextDueDate } from '../services/recurring.service';
 
 export async function runRecurringExpenseJob(): Promise<void> {
-  const today = new Date();
-  today.setHours(23, 59, 59, 999);
+  // Calculate the end of the current day in IST (UTC+5:30)
+  // regardless of the server's local timezone
+  const now = new Date();
+  const istTime = new Date(now.getTime() + (5.5 * 60 * 60 * 1000));
+  istTime.setUTCHours(23, 59, 59, 999);
+  const endOfIstDayUTC = new Date(istTime.getTime() - (5.5 * 60 * 60 * 1000));
 
-  const dueSchedules = await recurringRepository.findDueSchedules(today);
+  const dueSchedules = await recurringRepository.findDueSchedules(endOfIstDayUTC);
 
   if (dueSchedules.length === 0) return;
 
-  console.log(`[RecurringJob] Processing ${dueSchedules.length} due schedule(s)`);
+  console.log(`[RecurringJob] Processing ${dueSchedules.length} due schedule(s) as of ${endOfIstDayUTC.toISOString()}`);
 
   for (const schedule of dueSchedules) {
     try {
+      // Use the exact date scheduled in the database
       const expenseDate = new Date(schedule.nextDueDate);
-      // Ensure we don't accidentally create expenses from the future if cron runs at 23:59:59
-      if (expenseDate > new Date()) {
-          expenseDate.setTime(Date.now());
-      }
       
       const expense = await prisma.expense.create({
         data: {
