@@ -68,7 +68,9 @@ api.interceptors.response.use(
 
     if (status === 401) {
       useAuthStore.getState().logout()
-      window.location.href = '/login'
+      if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
+        window.location.href = '/login'
+      }
     }
 
     return Promise.reject(error.response?.data ?? error)
