@@ -42,7 +42,7 @@ export default function RecurringList({ items, onPause, onResume, onDelete }: Re
           <div className="mt-3 grid grid-cols-2 md:grid-cols-4 gap-2 text-xs text-gray-500">
             <div>
               <p className="uppercase tracking-wide">Amount</p>
-              <p className="text-sm font-semibold text-gray-900">{item.currency} {item.amount.toFixed(2)}</p>
+              <p className="text-sm font-semibold text-gray-900">{item.currency} {Number(item.amount).toFixed(2)}</p>
             </div>
             <div>
               <p className="uppercase tracking-wide">Next Due</p>
