@@ -7,7 +7,6 @@ export class CategoryRepository {
       where: {
         OR: [{ userId }, { isSystem: true }],
       },
-      include: { children: true },
       orderBy: [{ isSystem: 'desc' }, { name: 'asc' }],
     });
   }
@@ -15,7 +14,6 @@ export class CategoryRepository {
   async findById(id: string) {
     return prisma.category.findUnique({
       where: { id },
-      include: { children: true },
     });
   }
 
@@ -26,7 +24,6 @@ export class CategoryRepository {
         name: data.name,
         icon: data.icon,
         colorHex: data.colorHex,
-        ...(data.parentId ? { parentId: data.parentId } : {}),
         isSystem: false,
       },
     });
@@ -39,7 +36,6 @@ export class CategoryRepository {
         ...(data.name      !== undefined && { name: data.name }),
         ...(data.icon      !== undefined && { icon: data.icon }),
         ...(data.colorHex  !== undefined && { colorHex: data.colorHex }),
-        ...(data.parentId  !== undefined && { parentId: data.parentId }),
       },
     });
   }

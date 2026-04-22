@@ -10,7 +10,6 @@ export const createExpenseSchema = z.object({
   description: z.string().min(1, 'Description is required').max(255),
   categoryId: z.string().uuid('Invalid category ID'),
   expenseDate: dateSchema,
-  tags: z.array(z.string()).default([]),
   recurringId: z.string().uuid('Invalid recurring expense ID').optional().nullable(),
 });
 
@@ -20,7 +19,6 @@ const expenseFilterBaseSchema = z.object({
   categoryId: z.string().uuid('Invalid category ID').optional(),
   from: dateSchema.optional(),
   to: dateSchema.optional(),
-  tags: z.array(z.string()).optional(),
   page: z.coerce.number().int().positive().default(1),
   limit: z.coerce.number().int().positive().max(100).default(20),
 });

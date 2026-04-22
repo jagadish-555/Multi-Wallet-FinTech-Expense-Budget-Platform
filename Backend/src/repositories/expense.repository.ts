@@ -5,7 +5,7 @@ import { CreateExpenseInput, UpdateExpenseInput, ExpenseFilterInput } from '../v
 
 export class ExpenseRepository {
   private buildWhere(userId: string, filters: ExpenseFilterInput): Prisma.ExpenseWhereInput {
-    const { categoryId, from, to, tags } = filters;
+    const { categoryId, from, to } = filters;
 
     return {
       userId,
@@ -17,13 +17,6 @@ export class ExpenseRepository {
               ...(from && { gte: new Date(from) }),
               ...(to && { lte: new Date(to) }),
             },
-          }
-        : {}),
-      ...(tags && tags.length > 0
-        ? {
-            AND: tags.map((tag) => ({
-              tags: { path: '$', array_contains: tag },
-            })),
           }
         : {}),
     };
@@ -68,7 +61,6 @@ export class ExpenseRepository {
         currency:    data.currency,
         description: data.description,
         expenseDate: new Date(data.expenseDate),
-        tags:        data.tags,
         ...(data.recurringId ? { recurringId: data.recurringId } : {}),
       },
       include: { category: { select: { id: true, name: true, icon: true, colorHex: true } } },
@@ -84,7 +76,6 @@ export class ExpenseRepository {
         ...(data.currency    !== undefined && { currency: data.currency }),
         ...(data.description !== undefined && { description: data.description }),
         ...(data.expenseDate !== undefined && { expenseDate: new Date(data.expenseDate) }),
-        ...(data.tags        !== undefined && { tags: data.tags }),
       },
       include: { category: { select: { id: true, name: true, icon: true, colorHex: true } } },
     });

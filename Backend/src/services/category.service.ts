@@ -8,19 +8,6 @@ export class CategoryService {
   }
 
   async create(userId: string, input: CreateCategoryInput) {
-    if (input.parentId) {
-      const parent = await categoryRepository.findById(input.parentId);
-
-      if (!parent) {
-        throw ApiError.notFound('Parent category not found');
-      }
-
-      const ownedByUser = parent.userId === userId || parent.isSystem;
-      if (!ownedByUser) {
-        throw ApiError.forbidden('You do not have access to that parent category');
-      }
-    }
-
     return categoryRepository.create(userId, input);
   }
 

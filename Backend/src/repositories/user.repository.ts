@@ -18,7 +18,6 @@ export class UserRepository {
     name: string;
     currency: string;
     timezone: string;
-    avatarUrl: string;
   }>) {
     return prisma.user.update({ where: { id }, data });
   }

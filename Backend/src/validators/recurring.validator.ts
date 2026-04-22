@@ -16,7 +16,6 @@ const recurringBaseSchema = z.object({
   startDate: dateSchema,
   endDate: dateSchema.optional().nullable(),
   isActive: z.boolean().default(true),
-  tags: z.array(z.string()).default([]),
 });
 
 export const createRecurringExpenseSchema = recurringBaseSchema.refine((data) => {
