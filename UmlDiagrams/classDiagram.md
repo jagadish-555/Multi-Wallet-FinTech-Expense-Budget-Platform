@@ -5,68 +5,69 @@ classDiagram
   direction TB
 
   namespace Controllers {
-    class ExpenseController {
-      +getExpenses(req, res)
-      +createExpense(req, res)
-      +updateExpense(req, res)
-      +deleteExpense(req, res)
-    }
-    class BudgetController {
-      +getBudgets(req, res)
-      +createBudget(req, res)
-      +deleteBudget(req, res)
-    }
+    class AuthController
+    class CategoryController
+    class ExpenseController
+    class RecurringController
+    class BudgetController
+    class AnalyticsController
+    class NotificationController
   }
 
   namespace Services {
-    class ExpenseService {
-      +getAll(userId, filters)
-      +create(userId, input)
-      +update(userId, expenseId, input)
-      +delete(userId, expenseId)
-      -getOwnedExpense(userId, expenseId)
-    }
-    class BudgetService {
-      +getBudgetsWithUsage(userId)
-      +create(userId, input)
-      +delete(userId, budgetId)
-      -calculateUsage(budget, from, to)
-    }
+    class AuthService
+    class CategoryService
+    class ExpenseService
+    class RecurringService
+    class BudgetService
+    class AnalyticsService
+    class NotificationService
   }
 
   namespace Repositories {
-    class ExpenseRepository {
-      +findMany(userId, filters)
-      +findById(id, userId)
-      +create(userId, data)
-      +update(id, userId, data)
-      +softDelete(id)
-      +sumByCategory(userId, from, to)
-      +sumTotal(userId, from, to)
-    }
-    class BudgetRepository {
-      +findAllByUser(userId)
-      +findById(id, userId)
-      +create(userId, data)
-      +update(id, userId, data)
-      +delete(id)
-    }
+    class UserRepository
+    class CategoryRepository
+    class ExpenseRepository
+    class RecurringRepository
+    class BudgetRepository
+    class NotificationRepository
   }
 
   namespace Events {
-    class AppEventEmitter {
-      +emit(event, payload)
-      +on(event, listener)
-    }
+    class AppEventEmitter
+    class BudgetSubscriber
   }
 
-  ExpenseController --> ExpenseService : uses
-  BudgetController --> BudgetService : uses
+  namespace Jobs {
+    class RecurringExpenseJob
+  }
 
-  ExpenseService --> ExpenseRepository : delegates data access
-  BudgetService --> BudgetRepository : delegates data access
-  BudgetService --> ExpenseRepository : fetches usage sum
+  %% Controller -> Service Dependencies
+  AuthController --> AuthService
+  CategoryController --> CategoryService
+  ExpenseController --> ExpenseService
+  RecurringController --> RecurringService
+  BudgetController --> BudgetService
+  AnalyticsController --> AnalyticsService
+  NotificationController --> NotificationService
 
-  ExpenseService --> AppEventEmitter : triggers expense.added
-  AppEventEmitter --> BudgetService : triggers budget recalculation
+  %% Service -> Repository Dependencies
+  AuthService --> UserRepository
+  CategoryService --> CategoryRepository
+  ExpenseService --> ExpenseRepository
+  RecurringService --> RecurringRepository
+  BudgetService --> BudgetRepository
+  AnalyticsService --> ExpenseRepository : reads data
+  NotificationService --> NotificationRepository
+
+  %% Event Driven Flow
+  ExpenseService --> AppEventEmitter : emits 'expense.added'
+  RecurringService --> AppEventEmitter : emits 'expense.added'
+  AppEventEmitter --> BudgetSubscriber : listens
+  BudgetSubscriber --> BudgetService : recalculates usage
+  BudgetService --> NotificationService : triggers alerts
+
+  %% Cron Jobs
+  RecurringExpenseJob --> RecurringRepository : finds due
+  RecurringExpenseJob --> ExpenseRepository : creates expense
 ```
