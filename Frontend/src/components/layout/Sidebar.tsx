@@ -32,12 +32,16 @@ export default function Sidebar() {
     navigate('/login')
   }
 
-  const initials = user?.name
-    .split(' ')
-    .map((w) => w[0])
-    .join('')
-    .toUpperCase()
-    .slice(0, 2)
+  const isGuest = user?.email === 'test@example.com'
+
+  const initials = isGuest 
+    ? 'G' 
+    : user?.name
+        ?.split(' ')
+        .map((w) => w[0])
+        .join('')
+        .toUpperCase()
+        .slice(0, 2) || '?'
 
   const sidebarStyle: React.CSSProperties = {
     position: 'fixed',
@@ -210,21 +214,23 @@ export default function Sidebar() {
                 whiteSpace: 'nowrap',
               }}
             >
-              {user?.name}
+              {isGuest ? 'Guest' : user?.name}
             </p>
-            <p
-              style={{
-                fontFamily: "'Sora', sans-serif",
-                fontSize: '11px',
-                color: 'var(--text-secondary)',
-                margin: 0,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              {user?.email}
-            </p>
+            {!isGuest && (
+              <p
+                style={{
+                  fontFamily: "'Sora', sans-serif",
+                  fontSize: '11px',
+                  color: 'var(--text-secondary)',
+                  margin: 0,
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                {user?.email}
+              </p>
+            )}
           </div>
 
           {/* Logout icon */}

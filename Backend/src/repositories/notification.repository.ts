@@ -3,8 +3,17 @@ import { NotificationType } from '@prisma/client';
 
 export class NotificationRepository {
   async findAllByUser(userId: string) {
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
     return prisma.notification.findMany({
-      where: { userId },
+      where: { 
+        userId,
+        OR: [
+          { isRead: false },
+          { isRead: true, createdAt: { gte: sevenDaysAgo } }
+        ]
+      },
       orderBy: { createdAt: 'desc' },
       take: 50,
     });

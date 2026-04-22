@@ -51,7 +51,7 @@ export default function NotificationList({ notifications }: NotificationListProp
   return (
     <div style={{ maxHeight: '380px', overflowY: 'auto' }}>
       {notifications.map((n) => {
-        const config = TYPE_CONFIG[n.type]
+        const config = TYPE_CONFIG[n.type] || TYPE_CONFIG.SYSTEM
         return (
           <button
             key={n.id}
