@@ -23,14 +23,12 @@ export const expenseSchema = z.object({
   description: z.string().min(1, 'Description is required'),
   categoryId: z.string().min(1, 'Category is required'),
   expenseDate: z.string().min(1, 'Date is required'),
-  tags: z.string().optional(),
 })
 
 export const categorySchema = z.object({
   name: z.string().min(1, 'Name is required'),
   icon: z.string().min(1, 'Icon is required'),
   colorHex: z.string().regex(/^#[0-9A-Fa-f]{6}$/, 'Invalid hex colour'),
-  parentId: z.string().optional(),
 })
 
 export const budgetSchema = z.object({

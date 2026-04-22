@@ -49,7 +49,6 @@ export default function CategoryList({ categories, onEdit, onDelete }: CategoryL
                   <Badge variant={category.isSystem ? 'info' : 'neutral'}>
                     {category.isSystem ? 'System' : 'Custom'}
                   </Badge>
-                  {category.parentId && <span className="text-xs text-gray-400">Child</span>}
                 </div>
               </div>
             </div>

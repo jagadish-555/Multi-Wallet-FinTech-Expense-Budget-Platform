@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react'
+
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { z } from 'zod'
@@ -10,7 +10,6 @@ import { useToastStore } from '@/store/toast.store'
 import type { Expense } from '@/types'
 import Input from '@/components/ui/Input'
 import Button from '@/components/ui/Button'
-import { X } from 'lucide-react'
 import { format } from 'date-fns'
 
 type FormInput = z.input<typeof expenseSchema>
@@ -27,8 +26,6 @@ export default function ExpenseForm({ expense, onClose }: ExpenseFormProps) {
   const createExpense = useCreateExpense()
   const updateExpense = useUpdateExpense()
   const addToast = useToastStore((s) => s.addToast)
-  const [tagInput, setTagInput] = useState('')
-  const [tags, setTags] = useState<string[]>(expense?.tags ?? [])
 
   const isEdit = !!expense
 
@@ -49,16 +46,6 @@ export default function ExpenseForm({ expense, onClose }: ExpenseFormProps) {
     },
   })
 
-  const addTag = useCallback(() => {
-    const trimmed = tagInput.trim()
-    if (trimmed && !tags.includes(trimmed)) {
-      setTags((prev) => [...prev, trimmed])
-    }
-    setTagInput('')
-  }, [tagInput, tags])
-
-  const removeTag = (tag: string) => setTags((prev) => prev.filter((t) => t !== tag))
-
   const onSubmit = async (data: FormData) => {
     const payload = {
       amount: data.amount,
@@ -66,7 +53,6 @@ export default function ExpenseForm({ expense, onClose }: ExpenseFormProps) {
       description: data.description,
       categoryId: data.categoryId,
       expenseDate: data.expenseDate,
-      tags,
     }
     if (isEdit && expense) {
       await updateExpense.mutateAsync({ id: expense.id, data: payload })
@@ -151,37 +137,6 @@ export default function ExpenseForm({ expense, onClose }: ExpenseFormProps) {
         error={errors.expenseDate?.message}
         {...register('expenseDate')}
       />
-
-      <div className="flex flex-col gap-1">
-        <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Tags</label>
-        <div className="flex gap-2">
-          <input
-            value={tagInput}
-            onChange={(e) => setTagInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ',') {
-                e.preventDefault()
-                addTag()
-              }
-            }}
-            placeholder="Add tag and press Enter"
-            className="flex-1 border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-          />
-          <Button type="button" variant="secondary" size="sm" onClick={addTag}>Add</Button>
-        </div>
-        {tags.length > 0 && (
-          <div className="flex flex-wrap gap-1 mt-1">
-            {tags.map((tag) => (
-              <span key={tag} className="inline-flex items-center gap-1 bg-indigo-50 text-indigo-700 text-xs px-2 py-0.5 rounded-full">
-                {tag}
-                <button type="button" onClick={() => removeTag(tag)}>
-                  <X className="w-3 h-3" />
-                </button>
-              </span>
-            ))}
-          </div>
-        )}
-      </div>
 
       <div className="flex justify-end gap-3 pt-2">
         <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>

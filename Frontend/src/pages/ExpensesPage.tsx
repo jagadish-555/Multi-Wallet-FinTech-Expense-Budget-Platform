@@ -25,7 +25,7 @@ export default function ExpensesPage() {
   const { data, isLoading, isError, refetch } = useExpenses(filters)
 
   const handleFiltersChange = useCallback(
-    (f: { from: string; to: string; categoryId: string; description: string; tags: string }) => {
+    (f: { from: string; to: string; categoryId: string; description: string }) => {
       setFilters((prev) => ({
         ...prev,
         page: 1,
@@ -33,7 +33,6 @@ export default function ExpensesPage() {
         to: f.to || undefined,
         categoryId: f.categoryId || undefined,
         description: f.description || undefined,
-        tags: f.tags || undefined,
       }))
     },
     []

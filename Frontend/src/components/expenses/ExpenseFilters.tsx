@@ -9,7 +9,6 @@ interface ExpenseFiltersProps {
     to: string
     categoryId: string
     description: string
-    tags: string
   }) => void
 }
 
@@ -18,28 +17,26 @@ export default function ExpenseFilters({ categories, onFiltersChange }: ExpenseF
   const [to, setTo] = useState('')
   const [categoryId, setCategoryId] = useState('')
   const [description, setDescription] = useState('')
-  const [tags, setTags] = useState('')
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null)
 
   useEffect(() => {
     if (debounceRef.current) clearTimeout(debounceRef.current)
     debounceRef.current = setTimeout(() => {
-      onFiltersChange({ from, to, categoryId, description, tags })
+      onFiltersChange({ from, to, categoryId, description })
     }, 300)
     return () => {
       if (debounceRef.current) clearTimeout(debounceRef.current)
     }
-  }, [from, to, categoryId, description, tags, onFiltersChange])
+  }, [from, to, categoryId, description, onFiltersChange])
 
   const clearAll = () => {
     setFrom('')
     setTo('')
     setCategoryId('')
     setDescription('')
-    setTags('')
   }
 
-  const hasFilters = from || to || categoryId || description || tags
+  const hasFilters = from || to || categoryId || description
 
   return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>

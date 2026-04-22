@@ -16,7 +16,6 @@ export const expenseApi = {
     description: string
     categoryId: string
     expenseDate: string
-    tags: string[]
   }) => api.post<unknown, Expense>('/expenses', data),
 
   update: (id: string, data: Partial<Expense>) =>

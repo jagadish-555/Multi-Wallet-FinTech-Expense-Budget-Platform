@@ -4,7 +4,6 @@ export interface User {
   name: string
   currency: string
   timezone: string
-  avatarUrl?: string
 }
 
 export interface Category {
@@ -13,7 +12,6 @@ export interface Category {
   name: string
   icon: string
   colorHex: string
-  parentId?: string
   isSystem: boolean
 }
 
@@ -28,7 +26,6 @@ export interface Expense {
   description: string
   expenseDate: string
   status: 'ACTIVE' | 'DELETED'
-  tags: string[]
   createdAt: string
 }
 
@@ -112,7 +109,6 @@ export interface ExpenseFilters {
   categoryId?: string
   from?: string
   to?: string
-  tags?: string
   page?: number
   limit?: number
   description?: string

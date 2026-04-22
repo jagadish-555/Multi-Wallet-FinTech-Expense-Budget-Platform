@@ -42,7 +42,7 @@ export default function ExpenseRow({ expense, onEdit, onDelete }: ExpenseRowProp
         </div>
       </td>
 
-      {/* Description + tags */}
+      {/* Description */}
       <td style={{ padding: '14px 20px' }}>
         <p
           style={{
@@ -55,26 +55,6 @@ export default function ExpenseRow({ expense, onEdit, onDelete }: ExpenseRowProp
         >
           {expense.description}
         </p>
-        {expense.tags.length > 0 && (
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '4px', marginTop: '4px' }}>
-            {expense.tags.map((tag) => (
-              <span
-                key={tag}
-                style={{
-                  backgroundColor: 'var(--bg-overlay)',
-                  border: '1px solid var(--border)',
-                  borderRadius: 'var(--radius-full)',
-                  fontSize: '11px',
-                  padding: '2px 8px',
-                  color: 'var(--text-secondary)',
-                  fontFamily: "'Sora', sans-serif",
-                }}
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        )}
       </td>
 
       {/* Amount */}

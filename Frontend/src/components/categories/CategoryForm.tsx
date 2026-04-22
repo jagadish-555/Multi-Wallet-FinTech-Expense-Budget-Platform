@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { z } from 'zod'
 import { categorySchema } from '@/lib/validators'
-import { useCategories, useCreateCategory, useUpdateCategory } from '@/hooks/useCategories'
+import { useCreateCategory, useUpdateCategory } from '@/hooks/useCategories'
 import { useToastStore } from '@/store/toast.store'
 import type { Category } from '@/types'
 import Input from '@/components/ui/Input'
@@ -19,7 +19,6 @@ const ICON_CHOICES = ['🍔', '🛒', '🏠', '🚕', '🎬', '💊', '📚', '�
 const COLOR_CHOICES = ['#4f46e5', '#14b8a6', '#f97316', '#ef4444', '#0ea5e9', '#eab308', '#8b5cf6', '#64748b']
 
 export default function CategoryForm({ category, onClose }: CategoryFormProps) {
-  const { data: categories = [] } = useCategories()
   const createCategory = useCreateCategory()
   const updateCategory = useUpdateCategory()
   const addToast = useToastStore((s) => s.addToast)
@@ -37,13 +36,11 @@ export default function CategoryForm({ category, onClose }: CategoryFormProps) {
       name: category?.name ?? '',
       icon: category?.icon ?? '🛒',
       colorHex: category?.colorHex ?? '#4f46e5',
-      parentId: category?.parentId ?? '',
     },
   })
 
   const selectedIcon = watch('icon')
   const selectedColor = watch('colorHex')
-  const parentChoices = categories.filter((c) => c.id !== category?.id)
 
   const onSubmit = async (data: FormData) => {
     try {
@@ -51,7 +48,6 @@ export default function CategoryForm({ category, onClose }: CategoryFormProps) {
         name: data.name,
         icon: data.icon,
         colorHex: data.colorHex,
-        parentId: data.parentId || undefined,
       }
       if (isEdit && category) {
         await updateCategory.mutateAsync({ id: category.id, data: payload })
@@ -75,22 +71,6 @@ export default function CategoryForm({ category, onClose }: CategoryFormProps) {
         error={errors.name?.message}
         {...register('name')}
       />
-
-      <div className="flex flex-col gap-1">
-        <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Parent Category</label>
-        <select
-          id="cat-parent"
-          className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-          {...register('parentId')}
-        >
-          <option value="">None</option>
-          {parentChoices.map((c) => (
-            <option key={c.id} value={c.id}>
-              {c.icon} {c.name}
-            </option>
-          ))}
-        </select>
-      </div>
 
       <div className="space-y-2">
         <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Icon</label>
