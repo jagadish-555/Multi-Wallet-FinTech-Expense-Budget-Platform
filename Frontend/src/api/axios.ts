@@ -35,7 +35,7 @@ api.interceptors.response.use(
     const status = error.response?.status
     const message: string = error.response?.data?.message ?? ''
 
-    if (status === 401 && message.toLowerCase().includes('token expired') && !original._retry) {
+    if (status === 401 && message.toLowerCase().includes('expired token') && !original._retry) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           pendingQueue.push({ resolve, reject })
@@ -58,6 +58,7 @@ api.interceptors.response.use(
         return api(original)
       } catch (err) {
         processQueue(err, null)
+        localStorage.removeItem('auth')
         useAuthStore.getState().logout()
         window.location.href = '/login'
         return Promise.reject(err)
@@ -67,6 +68,7 @@ api.interceptors.response.use(
     }
 
     if (status === 401) {
+      localStorage.removeItem('auth')
       useAuthStore.getState().logout()
       if (window.location.pathname !== '/login' && window.location.pathname !== '/register') {
         window.location.href = '/login'
