@@ -45,7 +45,7 @@ export default function BudgetForm({ budget, onClose }: BudgetFormProps) {
   })
 
   const usedCategoryIds = budgets.data?.map((b) => b.categoryId).filter(Boolean) ?? []
-  const categoryOptions = categories.filter((c) => !c.isSystem || c.id === budget?.categoryId)
+  const categoryOptions = categories
 
   const onSubmit = async (data: FormData) => {
     try {
