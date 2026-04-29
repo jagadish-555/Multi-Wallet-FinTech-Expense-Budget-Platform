@@ -82,7 +82,7 @@ export default function RecurringForm({ onClose }: RecurringFormProps) {
         {errors.categoryId && <p className="text-red-500 text-xs">{errors.categoryId.message}</p>}
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Input
           id="recurring-amount"
           label="Amount"
@@ -114,7 +114,7 @@ export default function RecurringForm({ onClose }: RecurringFormProps) {
         {...register('description')}
       />
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="flex flex-col gap-1">
           <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Schedule</label>
           <select
@@ -144,7 +144,7 @@ export default function RecurringForm({ onClose }: RecurringFormProps) {
         )}
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Input
           id="recurring-start"
           label="Start Date"

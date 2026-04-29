@@ -76,7 +76,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Custom date inputs */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
           <input
             type="date"
             value={from}

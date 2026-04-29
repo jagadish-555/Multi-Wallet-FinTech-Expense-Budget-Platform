@@ -115,6 +115,8 @@ export default function ExpensesPage() {
               justifyContent: 'space-between',
               padding: '12px 20px',
               borderTop: '1px solid var(--border)',
+              flexWrap: 'wrap',
+              gap: '12px'
             }}
           >
             <span

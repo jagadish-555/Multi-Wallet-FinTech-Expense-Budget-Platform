@@ -43,20 +43,6 @@ export default function Sidebar() {
       .toUpperCase()
       .slice(0, 2) || '?'
 
-  const sidebarStyle: React.CSSProperties = {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    zIndex: 40,
-    height: '100%',
-    width: '240px',
-    backgroundColor: 'var(--bg-surface)',
-    borderRight: '1px solid var(--border)',
-    display: 'flex',
-    flexDirection: 'column',
-    transition: 'transform 0.2s ease',
-  }
-
   return (
     <>
       {sidebarOpen && (
@@ -74,11 +60,9 @@ export default function Sidebar() {
       )}
 
       <aside
-        style={{
-          ...sidebarStyle,
-          transform: sidebarOpen ? 'translateX(0)' : undefined,
-        }}
-        className={`${sidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0`}
+        className={`fixed top-0 left-0 z-40 h-full w-60 bg-[var(--bg-surface)] border-r border-[var(--border)] flex flex-col transition-transform duration-200 ease-in-out ${
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        } lg:translate-x-0`}
       >
         {/* Logo */}
         <div

@@ -69,7 +69,7 @@ export default function ExpenseForm({ expense, onClose }: ExpenseFormProps) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" noValidate>
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Input
           id="exp-amount"
           label="Amount"

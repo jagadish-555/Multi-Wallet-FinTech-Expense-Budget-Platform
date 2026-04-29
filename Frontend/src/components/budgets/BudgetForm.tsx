@@ -101,7 +101,7 @@ export default function BudgetForm({ budget, onClose }: BudgetFormProps) {
         </select>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Input
           id="budget-limit"
           label="Limit Amount"
@@ -125,7 +125,7 @@ export default function BudgetForm({ budget, onClose }: BudgetFormProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="flex flex-col gap-1">
           <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Period</label>
           <select

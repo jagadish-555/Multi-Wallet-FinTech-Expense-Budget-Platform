@@ -66,7 +66,7 @@ export default function DashboardPage() {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
       {/* Metric Cards Row */}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-5">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
         {summary.isLoading ? (
           Array.from({ length: 4 }).map((_, i) => <Skeleton key={i} variant="card" />)
         ) : summary.isError ? (
@@ -316,7 +316,7 @@ export default function DashboardPage() {
 
       {/* Recent Transactions */}
       <div style={CARD_STYLE}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px', flexWrap: 'wrap', gap: '12px' }}>
           <h2
             style={{
               fontFamily: "'Sora', sans-serif",

@@ -40,7 +40,7 @@ export default function ExpenseFilters({ categories, onFiltersChange }: ExpenseF
 
   return (
     <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '8px' }}>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         {/* From */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
           <label className="label-dark">From</label>
