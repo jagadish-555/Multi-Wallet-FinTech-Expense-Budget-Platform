@@ -26,11 +26,11 @@ export default function RecurringList({ items, onPause, onResume, onDelete }: Re
   return (
     <div className="space-y-3">
       {items.map((item) => (
-        <div key={item.id} className="bg-white border border-gray-200 rounded-xl p-4">
+        <div key={item.id} className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl p-4 hover:border-[var(--border-strong)] transition-colors">
           <div className="flex items-start justify-between gap-3">
             <div className="min-w-0">
-              <p className="text-sm font-semibold text-gray-900 truncate">{item.description}</p>
-              <p className="text-xs text-gray-500 mt-1">
+              <p className="text-sm font-semibold text-[var(--text-primary)] truncate">{item.description}</p>
+              <p className="text-xs text-[var(--text-secondary)] mt-1">
                 {item.category.icon} {item.category.name} • {item.scheduleType}
               </p>
             </div>
@@ -42,19 +42,19 @@ export default function RecurringList({ items, onPause, onResume, onDelete }: Re
           <div className="mt-3 grid grid-cols-2 md:grid-cols-4 gap-2 text-xs text-gray-500">
             <div>
               <p className="uppercase tracking-wide">Amount</p>
-              <p className="text-sm font-semibold text-gray-900">{item.currency} {Number(item.amount).toFixed(2)}</p>
+              <p className="text-sm font-semibold text-[var(--text-primary)]">{item.currency} {Number(item.amount).toFixed(2)}</p>
             </div>
             <div>
               <p className="uppercase tracking-wide">Next Due</p>
-              <p className="text-sm font-semibold text-gray-900">{formatDate(item.nextDueDate)}</p>
+              <p className="text-sm font-semibold text-[var(--text-primary)]">{formatDate(item.nextDueDate)}</p>
             </div>
             <div>
               <p className="uppercase tracking-wide">Start</p>
-              <p className="text-sm font-semibold text-gray-900">{formatDate(item.startDate)}</p>
+              <p className="text-sm font-semibold text-[var(--text-primary)]">{formatDate(item.startDate)}</p>
             </div>
             <div>
               <p className="uppercase tracking-wide">End</p>
-              <p className="text-sm font-semibold text-gray-900">{item.endDate ? formatDate(item.endDate) : 'Open'}</p>
+              <p className="text-sm font-semibold text-[var(--text-primary)]">{item.endDate ? formatDate(item.endDate) : 'Open'}</p>
             </div>
           </div>
 

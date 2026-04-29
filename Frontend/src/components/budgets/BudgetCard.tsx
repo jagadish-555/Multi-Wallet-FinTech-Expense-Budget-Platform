@@ -18,13 +18,13 @@ function getPeriodLabel(period: BudgetWithUsage['period']) {
 
 export default function BudgetCard({ budget, onEdit, onDelete }: BudgetCardProps) {
   return (
-    <div className="bg-white rounded-xl border border-gray-200 p-5 space-y-4">
+    <div className="bg-[var(--bg-surface)] rounded-xl border border-[var(--border)] p-5 space-y-4 hover:border-[var(--border-strong)] transition-colors">
       <div className="flex items-start justify-between gap-2">
         <div>
-          <h3 className="text-sm font-semibold text-gray-900">
+          <h3 className="text-sm font-semibold text-[var(--text-primary)]">
             {budget.category?.name ?? 'Overall Budget'}
           </h3>
-          <p className="text-xs text-gray-500 mt-1">
+          <p className="text-xs text-[var(--text-secondary)] mt-1">
             {getPeriodLabel(budget.period)} • Day {budget.periodDay}
           </p>
         </div>

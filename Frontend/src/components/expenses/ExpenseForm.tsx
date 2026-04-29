@@ -83,7 +83,7 @@ export default function ExpenseForm({ expense, onClose }: ExpenseFormProps) {
           <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Currency</label>
           <select
             id="exp-currency"
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="select-dark"
             {...register('currency')}
           >
             <option value="INR">INR</option>
@@ -106,7 +106,7 @@ export default function ExpenseForm({ expense, onClose }: ExpenseFormProps) {
         <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Category</label>
         <select
           id="exp-category"
-          className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+          className="select-dark capitalize"
           {...register('categoryId')}
         >
           <option value="">Select category…</option>

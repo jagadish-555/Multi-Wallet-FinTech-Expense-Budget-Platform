@@ -85,7 +85,7 @@ export default function BudgetForm({ budget, onClose }: BudgetFormProps) {
         <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Category</label>
         <select
           id="budget-category"
-          className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+          className="select-dark capitalize"
           {...register('categoryId')}
         >
           <option value="">Overall (all categories)</option>
@@ -114,7 +114,7 @@ export default function BudgetForm({ budget, onClose }: BudgetFormProps) {
           <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Currency</label>
           <select
             id="budget-currency"
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="select-dark"
             {...register('currency')}
           >
             <option value="INR">INR</option>
@@ -130,7 +130,7 @@ export default function BudgetForm({ budget, onClose }: BudgetFormProps) {
           <label className="text-xs font-medium text-gray-500 uppercase tracking-wide">Period</label>
           <select
             id="budget-period"
-            className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+            className="select-dark"
             {...register('period')}
           >
             <option value="MONTHLY">Monthly</option>

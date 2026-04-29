@@ -34,7 +34,7 @@ export default function CategoryList({ categories, onEdit, onDelete }: CategoryL
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
       {categories.map((category) => (
-        <div key={category.id} className="bg-white border border-gray-200 rounded-xl p-4">
+        <div key={category.id} className="bg-[var(--bg-surface)] border border-[var(--border)] rounded-xl p-4 hover:border-[var(--border-strong)] transition-colors">
           <div className="flex items-start justify-between gap-3">
             <div className="flex items-center gap-3 min-w-0">
               <div
@@ -44,7 +44,7 @@ export default function CategoryList({ categories, onEdit, onDelete }: CategoryL
                 <DynamicIcon name={category.icon || 'tags'} color={category.colorHex} />
               </div>
               <div className="min-w-0">
-                <p className="text-sm font-semibold text-gray-900 truncate">{category.name}</p>
+                <p className="text-sm font-semibold text-[var(--text-primary)] truncate">{category.name}</p>
                 <div className="mt-1 flex items-center gap-2">
                   <Badge variant={category.isSystem ? 'info' : 'neutral'}>
                     {category.isSystem ? 'System' : 'Custom'}
