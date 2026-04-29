@@ -13,11 +13,11 @@ export class ExpenseRepository {
       ...(categoryId && { categoryId }),
       ...(from || to
         ? {
-            expenseDate: {
-              ...(from && { gte: new Date(from) }),
-              ...(to && { lte: new Date(to) }),
-            },
-          }
+          expenseDate: {
+            ...(from && { gte: this.parseLocalDate(from) }),
+            ...(to && { lte: this.parseLocalDate(to) }),
+          },
+        }
         : {}),
     };
   }
@@ -51,16 +51,21 @@ export class ExpenseRepository {
     });
   }
 
+  private parseLocalDate(dateStr: string): Date {
+    const [year, month, day] = dateStr.split('-').map(Number);
+    return new Date(year, month - 1, day);
+  }
+
   async create(userId: string, data: CreateExpenseInput) {
     return prisma.expense.create({
       data: {
         userId,
-        categoryId:  data.categoryId,
-        amount:      data.amount,
-        amountBase:  data.amount,
-        currency:    data.currency,
+        categoryId: data.categoryId,
+        amount: data.amount,
+        amountBase: data.amount,
+        currency: data.currency,
         description: data.description,
-        expenseDate: new Date(data.expenseDate),
+        expenseDate: this.parseLocalDate(data.expenseDate),
         ...(data.recurringId ? { recurringId: data.recurringId } : {}),
       },
       include: { category: { select: { id: true, name: true, icon: true, colorHex: true } } },
@@ -71,11 +76,11 @@ export class ExpenseRepository {
     return prisma.expense.update({
       where: { id },
       data: {
-        ...(data.categoryId  !== undefined && { categoryId: data.categoryId }),
-        ...(data.amount      !== undefined && { amount: data.amount, amountBase: data.amount }),
-        ...(data.currency    !== undefined && { currency: data.currency }),
+        ...(data.categoryId !== undefined && { categoryId: data.categoryId }),
+        ...(data.amount !== undefined && { amount: data.amount, amountBase: data.amount }),
+        ...(data.currency !== undefined && { currency: data.currency }),
         ...(data.description !== undefined && { description: data.description }),
-        ...(data.expenseDate !== undefined && { expenseDate: new Date(data.expenseDate) }),
+        ...(data.expenseDate !== undefined && { expenseDate: this.parseLocalDate(data.expenseDate) }),
       },
       include: { category: { select: { id: true, name: true, icon: true, colorHex: true } } },
     });

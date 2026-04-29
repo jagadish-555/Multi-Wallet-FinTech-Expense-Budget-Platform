@@ -4,9 +4,7 @@ import { CreateCategoryInput, UpdateCategoryInput } from '../validators/category
 export class CategoryRepository {
   async findAllByUser(userId: string) {
     return prisma.category.findMany({
-      where: {
-        OR: [{ userId }, { isSystem: true }],
-      },
+      where: { userId },
       orderBy: [{ isSystem: 'desc' }, { name: 'asc' }],
     });
   }

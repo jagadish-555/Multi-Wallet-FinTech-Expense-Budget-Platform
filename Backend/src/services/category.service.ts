@@ -45,7 +45,7 @@ export class CategoryService {
       throw ApiError.notFound('Category not found');
     }
 
-    if (!category.isSystem && category.userId !== userId) {
+    if (category.userId !== userId) {
       throw ApiError.forbidden('You do not have access to this category');
     }
 
